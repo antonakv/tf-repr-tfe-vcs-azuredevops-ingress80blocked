@@ -2,13 +2,13 @@ provider "aws" {
   region = var.region
 }
 
-resource "tls_private_key" "aws6" {
+resource "tls_private_key" "aws7" {
   algorithm = "RSA"
 }
 
-resource "tls_self_signed_cert" "aws6" {
-  key_algorithm         = tls_private_key.aws6.algorithm
-  private_key_pem       = tls_private_key.aws6.private_key_pem
+resource "tls_self_signed_cert" "aws7" {
+  key_algorithm         = tls_private_key.aws7.algorithm
+  private_key_pem       = tls_private_key.aws7.private_key_pem
   validity_period_hours = 8928
   early_renewal_hours   = 744
 
@@ -32,7 +32,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "aakulov-aws6"
+    Name = "aakulov-aws7"
   }
 }
 
@@ -63,24 +63,24 @@ resource "aws_subnet" "subnet_public2" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
   tags = {
-    Name = "aakulov-aws6"
+    Name = "aakulov-aws7"
   }
 }
 
-resource "aws_eip" "aws6" {
+resource "aws_eip" "aws7" {
   vpc = true
 }
 
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.aws6.id
+  allocation_id = aws_eip.aws7.id
   subnet_id     = aws_subnet.subnet_public1.id
   depends_on    = [aws_internet_gateway.igw]
   tags = {
-    Name = "aakulov-aws6"
+    Name = "aakulov-aws7"
   }
 }
 
-resource "aws_route_table" "aws6-private" {
+resource "aws_route_table" "aws7-private" {
   vpc_id = aws_vpc.vpc.id
 
 
@@ -90,11 +90,11 @@ resource "aws_route_table" "aws6-private" {
   }
 
   tags = {
-    Name = "aakulov-aws6-private"
+    Name = "aakulov-aws7-private"
   }
 }
 
-resource "aws_route_table" "aws6-public" {
+resource "aws_route_table" "aws7-public" {
   vpc_id = aws_vpc.vpc.id
 
 
@@ -104,25 +104,25 @@ resource "aws_route_table" "aws6-public" {
   }
 
   tags = {
-    Name = "aakulov-aws6-public"
+    Name = "aakulov-aws7-public"
   }
 }
 
-resource "aws_route_table_association" "aws6-private" {
+resource "aws_route_table_association" "aws7-private" {
   subnet_id      = aws_subnet.subnet_private1.id
-  route_table_id = aws_route_table.aws6-private.id
+  route_table_id = aws_route_table.aws7-private.id
 }
 
-resource "aws_route_table_association" "aws6-public" {
+resource "aws_route_table_association" "aws7-public" {
   subnet_id      = aws_subnet.subnet_public1.id
-  route_table_id = aws_route_table.aws6-public.id
+  route_table_id = aws_route_table.aws7-public.id
 }
 
-resource "aws_security_group" "aws6-internal-sg" {
+resource "aws_security_group" "aws7-internal-sg" {
   vpc_id = aws_vpc.vpc.id
-  name   = "aakulov-aws6-internal-sg"
+  name   = "aakulov-aws7-internal-sg"
   tags = {
-    Name = "aakulov-aws6-internal-sg"
+    Name = "aakulov-aws7-internal-sg"
   }
 
   ingress {
@@ -150,7 +150,7 @@ resource "aws_security_group" "aws6-internal-sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.aakulov-aws6.id]
+    security_groups = [aws_security_group.aakulov-aws7.id]
   }
 
   ingress {
@@ -168,11 +168,11 @@ resource "aws_security_group" "aws6-internal-sg" {
   }
 }
 
-resource "aws_security_group" "aakulov-aws6" {
+resource "aws_security_group" "aakulov-aws7" {
   vpc_id = aws_vpc.vpc.id
-  name   = "aakulov-aws6-sg"
+  name   = "aakulov-aws7-sg"
   tags = {
-    Name = "aakulov-aws6-sg"
+    Name = "aakulov-aws7-sg"
   }
 
   ingress {
@@ -218,24 +218,24 @@ resource "aws_security_group" "aakulov-aws6" {
   }
 }
 
-resource "aws_route53_record" "aws6" {
+resource "aws_route53_record" "aws7" {
   zone_id         = "Z077919913NMEBCGB4WS0"
   name            = var.tfe_hostname
   type            = "A"
   ttl             = "300"
-  records         = [aws_instance.aws6.public_ip]
+  records         = [aws_instance.aws7.public_ip]
   allow_overwrite = true
 }
 
-resource "aws_db_subnet_group" "aws6" {
-  name       = "aakulov-aws6"
+resource "aws_db_subnet_group" "aws7" {
+  name       = "aakulov-aws7"
   subnet_ids = [aws_subnet.subnet_public1.id, aws_subnet.subnet_public2.id, aws_subnet.subnet_private1.id, aws_subnet.subnet_private2.id]
   tags = {
-    Name = "aakulov-aws6"
+    Name = "aakulov-aws7"
   }
 }
 
-resource "aws_db_instance" "aws6" {
+resource "aws_db_instance" "aws7" {
   allocated_storage      = 20
   max_allocated_storage  = 100
   engine                 = "postgres"
@@ -244,25 +244,25 @@ resource "aws_db_instance" "aws6" {
   username               = "postgres"
   password               = var.db_password
   instance_class         = "db.t2.micro"
-  db_subnet_group_name   = aws_db_subnet_group.aws6.name
-  vpc_security_group_ids = [aws_security_group.aakulov-aws6.id]
+  db_subnet_group_name   = aws_db_subnet_group.aws7.name
+  vpc_security_group_ids = [aws_security_group.aakulov-aws7.id]
   skip_final_snapshot    = true
   tags = {
-    Name = "aakulov-aws6"
+    Name = "aakulov-aws7"
   }
 }
 
-resource "aws_s3_bucket" "aws6" {
-  bucket        = "aakulov-aws6-tfe-data"
+resource "aws_s3_bucket" "aws7" {
+  bucket        = "aakulov-aws7-tfe-data"
   acl           = "private"
   force_destroy = true
   tags = {
-    Name = "aakulov-aws6-tfe-data"
+    Name = "aakulov-aws7-tfe-data"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "aws6" {
-  bucket = aws_s3_bucket.aws6.id
+resource "aws_s3_bucket_public_access_block" "aws7" {
+  bucket = aws_s3_bucket.aws7.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -270,8 +270,8 @@ resource "aws_s3_bucket_public_access_block" "aws6" {
   ignore_public_acls      = true
 }
 
-resource "aws_iam_role" "aakulov-aws6-iam-role-ec2-s3" {
-  name = "aakulov-aws6-iam-role-ec2-s3"
+resource "aws_iam_role" "aakulov-aws7-iam-role-ec2-s3" {
+  name = "aakulov-aws7-iam-role-ec2-s3"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -287,18 +287,18 @@ resource "aws_iam_role" "aakulov-aws6-iam-role-ec2-s3" {
   })
 
   tags = {
-    tag-key = "aakulov-aws6-iam-role-ec2-s3"
+    tag-key = "aakulov-aws7-iam-role-ec2-s3"
   }
 }
 
-resource "aws_iam_instance_profile" "aakulov-aws6-ec2-s3" {
-  name = "aakulov-aws6-ec2-s3"
-  role = aws_iam_role.aakulov-aws6-iam-role-ec2-s3.name
+resource "aws_iam_instance_profile" "aakulov-aws7-ec2-s3" {
+  name = "aakulov-aws7-ec2-s3"
+  role = aws_iam_role.aakulov-aws7-iam-role-ec2-s3.name
 }
 
-resource "aws_iam_role_policy" "aakulov-aws6-ec2-s3" {
-  name = "aakulov-aws6-ec2-s3"
-  role = aws_iam_role.aakulov-aws6-iam-role-ec2-s3.id
+resource "aws_iam_role_policy" "aakulov-aws7-ec2-s3" {
+  name = "aakulov-aws7-ec2-s3"
+  role = aws_iam_role.aakulov-aws7-iam-role-ec2-s3.id
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -326,7 +326,7 @@ resource "aws_iam_role_policy" "aakulov-aws6-ec2-s3" {
         "Sid" : "VisualEditor1",
         "Effect" : "Allow",
         "Action" : "s3:*",
-        "Resource" : aws_s3_bucket.aws6.arn
+        "Resource" : aws_s3_bucket.aws7.arn
       }
     ]
   })
@@ -337,17 +337,17 @@ data "template_file" "install_tfe_sh" {
   vars = {
     enc_password  = var.enc_password
     hostname      = var.tfe_hostname
-    pgsqlhostname = aws_db_instance.aws6.address
+    pgsqlhostname = aws_db_instance.aws7.address
     pgsqlpassword = var.db_password
-    pguser        = aws_db_instance.aws6.username
-    s3bucket      = aws_s3_bucket.aws6.bucket
+    pguser        = aws_db_instance.aws7.username
+    s3bucket      = aws_s3_bucket.aws7.bucket
     s3region      = var.region
-    cert_pem      = tls_self_signed_cert.aws6.cert_pem
-    key_pem       = tls_private_key.aws6.private_key_pem
+    cert_pem      = tls_self_signed_cert.aws7.cert_pem
+    key_pem       = tls_private_key.aws7.private_key_pem
   }
 }
 
-data "template_cloudinit_config" "aws6_cloudinit" {
+data "template_cloudinit_config" "aws7_cloudinit" {
   gzip          = true
   base64_encode = true
 
@@ -358,24 +358,24 @@ data "template_cloudinit_config" "aws6_cloudinit" {
   }
 }
 
-resource "aws_instance" "aws6" {
+resource "aws_instance" "aws7" {
   ami                         = var.ami
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  vpc_security_group_ids      = [aws_security_group.aakulov-aws6.id]
+  vpc_security_group_ids      = [aws_security_group.aakulov-aws7.id]
   subnet_id                   = aws_subnet.subnet_public1.id
   associate_public_ip_address = true
-  user_data                   = data.template_cloudinit_config.aws6_cloudinit.rendered
-  iam_instance_profile        = aws_iam_instance_profile.aakulov-aws6-ec2-s3.id
+  user_data                   = data.template_cloudinit_config.aws7_cloudinit.rendered
+  iam_instance_profile        = aws_iam_instance_profile.aakulov-aws7-ec2-s3.id
   metadata_options {
     http_tokens   = "required"
     http_endpoint = "enabled"
   }
   tags = {
-    Name = "aakulov-aws6"
+    Name = "aakulov-aws7"
   }
 }
 
 output "aws_url" {
-  value = aws_route53_record.aws6.name
+  value = aws_route53_record.aws7.name
 }
