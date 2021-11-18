@@ -79,25 +79,11 @@ resource "aws_s3_bucket_public_access_block" "aakulov-aws7-iam-role-airgap" {
   ignore_public_acls = true
 }
 
-resource "aws_s3_bucket_object" "latesttargz" {
-  bucket = aws_s3_bucket.aws7-airgap.id
-  key = "latest.tar.gz"
-  source = "upload/latest.tar.gz"
-  etag = filemd5("upload/latest.tar.gz")
-}
-
 resource "aws_s3_bucket_object" "licenserli" {
   bucket = aws_s3_bucket.aws7-airgap.id
   key = "license.rli"
   source = "upload/license.rli"
   etag = filemd5("upload/license.rli")
-}
-
-resource "aws_s3_bucket_object" "tfe557airgap" {
-  bucket = aws_s3_bucket.aws7-airgap.id
-  key = "tfe-557.airgap"
-  source = "upload/tfe-557.airgap"
-  etag = filemd5("upload/tfe-557.airgap")
 }
 
 output "s3_bucket_for_tf-ob-tfe-aws-airgap" {
