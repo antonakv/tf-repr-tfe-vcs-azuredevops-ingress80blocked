@@ -125,8 +125,7 @@ echo "
     \"TlsBootstrapKey\":              \"/home/ubuntu/install/server.key\",
     \"BypassPreflightChecks\":        true,
     \"ImportSettingsFrom\":           \"/home/ubuntu/install/settings.json\",
-    \"LicenseFileLocation\":          \"/home/ubuntu/install/license.rli\",
-    \"LicenseBootstrapAirgapPackagePath\": \"/home/ubuntu/install/tfe-557.airgap\"
+    \"LicenseFileLocation\":          \"/home/ubuntu/install/license.rli\"
 }" > /home/ubuntu/install/replicated.conf
 echo "${cert_pem}" > /home/ubuntu/install/server.crt
 echo "${key_pem}" > /home/ubuntu/install/server.key
@@ -135,12 +134,12 @@ echo "#!/usr/bin/env bash
 chmod 600 /home/ubuntu/install/server.key
 cd /home/ubuntu/install
 aws s3 cp s3://aakulov-aws7-tfe-airgap . --recursive
-tar -xf latest.tar.gz
+curl -# -o /home/ubuntu/install/install.sh https://install.terraform.io/ptfe/stable
 sudo rm -rf /usr/share/keyrings/docker-archive-keyring.gpg
 cp /home/ubuntu/install/replicated.conf /etc/replicated.conf
 cp /home/ubuntu/install/replicated.conf /root/replicated.conf
 chown -R ubuntu: /home/ubuntu/install
-yes | sudo ./install.sh airgap no-proxy private-address=$IPADDR public-address=$IPADDR" > /home/ubuntu/install/install_tfe.sh
+yes | sudo ./install.sh no-proxy private-address=$IPADDR public-address=$IPADDR" > /home/ubuntu/install/install_tfe.sh
 
 chmod +x /home/ubuntu/install/install_tfe.sh
 
