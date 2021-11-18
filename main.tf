@@ -139,7 +139,7 @@ resource "aws_security_group" "aws7-internal-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
+/*   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -151,7 +151,7 @@ resource "aws_security_group" "aws7-internal-sg" {
     to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.aakulov-aws7.id]
-  }
+  } */
 
   ingress {
     from_port   = 443
@@ -175,12 +175,12 @@ resource "aws_security_group" "aakulov-aws7" {
     Name = "aakulov-aws7-sg"
   }
 
-  ingress {
+/*   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
+  } */
 
   ingress {
     from_port   = 8800
