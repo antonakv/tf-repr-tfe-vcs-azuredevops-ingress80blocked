@@ -175,12 +175,12 @@ resource "aws_security_group" "aakulov-aws7" {
     Name = "aakulov-aws7-sg"
   }
 
-/*   ingress {
+  ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  } */
+  } 
 
   ingress {
     from_port   = 8800
@@ -243,7 +243,7 @@ resource "aws_db_instance" "aws7" {
   name                   = "mydbtfe"
   username               = "postgres"
   password               = var.db_password
-  instance_class         = var.db_instance_type
+  instance_class         = var.instance_type
   db_subnet_group_name   = aws_db_subnet_group.aws7.name
   vpc_security_group_ids = [aws_security_group.aakulov-aws7.id]
   skip_final_snapshot    = true
