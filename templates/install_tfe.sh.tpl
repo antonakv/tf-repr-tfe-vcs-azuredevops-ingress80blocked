@@ -135,11 +135,12 @@ chmod 600 /home/ubuntu/install/server.key
 cd /home/ubuntu/install
 aws s3 cp s3://aakulov-aws7-tfe-airgap . --recursive
 curl -# -o /home/ubuntu/install/install.sh https://install.terraform.io/ptfe/stable
+chmod +x install.sh
 sudo rm -rf /usr/share/keyrings/docker-archive-keyring.gpg
 cp /home/ubuntu/install/replicated.conf /etc/replicated.conf
 cp /home/ubuntu/install/replicated.conf /root/replicated.conf
 chown -R ubuntu: /home/ubuntu/install
-yes | sudo ./install.sh no-proxy private-address=$IPADDR public-address=$IPADDR" > /home/ubuntu/install/install_tfe.sh
+yes | sudo /usr/bin/bash /home/ubuntu/install/install.sh no-proxy private-address=$IPADDR public-address=$IPADDR" > /home/ubuntu/install/install_tfe.sh
 
 chmod +x /home/ubuntu/install/install_tfe.sh
 
