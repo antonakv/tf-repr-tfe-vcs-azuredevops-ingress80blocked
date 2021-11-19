@@ -140,7 +140,9 @@ sudo rm -rf /usr/share/keyrings/docker-archive-keyring.gpg
 cp /home/ubuntu/install/replicated.conf /etc/replicated.conf
 cp /home/ubuntu/install/replicated.conf /root/replicated.conf
 chown -R ubuntu: /home/ubuntu/install
-yes | sudo /usr/bin/bash /home/ubuntu/install/install.sh no-proxy private-address=$IPADDR public-address=$IPADDR" > /home/ubuntu/install/install_tfe.sh
+yes | sudo /usr/bin/bash /home/ubuntu/install/install.sh no-proxy private-address=$IPADDR public-address=$IPADDR
+exit 0
+" > /home/ubuntu/install/install_tfe.sh
 
 chmod +x /home/ubuntu/install/install_tfe.sh
 
